@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { register as registerRequest } from "../../services/authService";
+import { register as registerRequest, login as loginRequest } from "../../services/authService";
 import { useAuth } from "../../context/auth/AuthContext";
 import { useToast } from "../../context/toast/ToastContext";
 import styles from "./Register.module.css";
@@ -17,9 +17,10 @@ export default function Register() {
     e.preventDefault();
 
     try {
-      const data = await registerRequest(username, password);
+      await registerRequest(username, password);
 
-      // immediately authenticate user after register
+      // log user in and immediately authenticate user after register
+      const data = await loginRequest(username, password);
       login(data.user);
 
       toast.success("Account created successfully");
