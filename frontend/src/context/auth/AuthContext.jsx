@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-import { getMe } from "../../services/authService";
+import { getMe, logout as logoutRequest } from "../../services/authService";
 
 const AuthContext = createContext();
 
@@ -29,7 +29,7 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     try {
-      await logout(); 
+      await logoutRequest(); 
     } finally {
       setUser(null);
     }
