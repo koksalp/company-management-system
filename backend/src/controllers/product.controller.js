@@ -1,8 +1,8 @@
-const prisma = require('../config/prisma');
+const prisma = require("../config/prisma");
 
 // ---------- helper ----------
-const isInvalidString = (v) => typeof v !== 'string' || !v.trim();
-//CREATE product 
+const isInvalidString = (v) => typeof v !== "string" || !v.trim();
+//CREATE product
 const createProduct = async (req, res) => {
   try {
     const { name, category, amount, amountUnit, companyId } = req.body;
@@ -21,10 +21,10 @@ const createProduct = async (req, res) => {
       });
     }
 
-    // amount 
+    // amount
     if (isInvalidString(amount)) {
       return res.status(400).json({
-        message: "invalid amount (must be integer)", 
+        message: "invalid amount (must be a non negative integer)",
       });
     }
 
@@ -47,10 +47,11 @@ const createProduct = async (req, res) => {
 
     if (
       Number.isNaN(parsedAmount) ||
-      !Number.isInteger(parsedAmount)
+      !Number.isInteger(parsedAmount) ||
+      parsedAmount < 0
     ) {
       return res.status(400).json({
-        message: "invalid amount (must be integer)", 
+        message: "invalid amount (must be a non negative integer)",
       });
     }
 
@@ -87,17 +88,17 @@ const getProducts = async (req, res) => {
   try {
     const products = await prisma.product.findMany({
       include: {
-        company: true
-      }
+        company: true,
+      },
     });
 
     return res.json(products);
   } catch (error) {
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ message: "Internal server error" });
   }
-}; 
+};
 
-// UPDATE PRODUCT 
+// UPDATE PRODUCT
 const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
@@ -140,15 +141,21 @@ const updateProduct = async (req, res) => {
     }
 
     if (amount !== undefined) {
+      if (isInvalidString(String(amount))) {
+        return res.status(400).json({
+          message: "invalid amount (must be a non negative integer)",
+        });
+      }
       const parsedAmount = Number(amount);
 
       // must be a valid integer
       if (
         Number.isNaN(parsedAmount) ||
-        !Number.isInteger(parsedAmount)
+        !Number.isInteger(parsedAmount) ||
+        parsedAmount < 0
       ) {
         return res.status(400).json({
-          message: "invalid amount (must be integer)",
+          message: "invalid amount (must be a non negative integer)",
         });
       }
 
@@ -187,29 +194,29 @@ const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
 
-    if (!id || typeof id !== 'string') {
+    if (!id || typeof id !== "string") {
       return res.status(400).json({
-        message: 'invalid product id'
+        message: "invalid product id",
       });
     }
 
     const existing = await prisma.product.findUnique({
-      where: { id }
+      where: { id },
     });
 
     if (!existing) {
       return res.status(404).json({
-        message: 'product not found'
+        message: "product not found",
       });
     }
 
     await prisma.product.delete({
-      where: { id }
+      where: { id },
     });
 
-    return res.json({ message: 'Product deleted' });
+    return res.json({ message: "Product deleted" });
   } catch (error) {
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -217,5 +224,5 @@ module.exports = {
   createProduct,
   getProducts,
   updateProduct,
-  deleteProduct
-}; 
+  deleteProduct,
+};
