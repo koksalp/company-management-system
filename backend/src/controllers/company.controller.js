@@ -1,29 +1,39 @@
-const prisma = require('../config/prisma');
+const prisma = require("../config/prisma");
 
 // ---------- helper ----------
-const isInvalidString = (v) => typeof v !== 'string' || !v.trim();
+const isInvalidString = (v) => typeof v !== "string" || !v.trim();
 
 const createCompany = async (req, res) => {
   try {
     const { name, legalNumber, incorporationCountry, website } = req.body;
-
-    if (
-      isInvalidString(name) ||
-      isInvalidString(legalNumber) ||
-      isInvalidString(incorporationCountry)
-    ) {
+    // NAME
+    if (isInvalidString(name)) {
       return res.status(400).json({
-        message: 'invalid input data'
+        message: "invalid name",
+      });
+    }
+
+    // LEGAL NUMBER
+    if (isInvalidString(legalNumber)) {
+      return res.status(400).json({
+        message: "invalid legal number",
+      });
+    }
+
+    // INCORPORATION COUNTRY
+    if (isInvalidString(incorporationCountry)) {
+      return res.status(400).json({
+        message: "invalid incorporation country",
       });
     }
 
     const existing = await prisma.company.findUnique({
-      where: { legalNumber: legalNumber.trim() }
+      where: { legalNumber: legalNumber.trim() },
     });
 
     if (existing) {
       return res.status(400).json({
-        message: 'Company already exists'
+        message: "Company already exists",
       });
     }
 
@@ -33,36 +43,37 @@ const createCompany = async (req, res) => {
         legalNumber: legalNumber.trim(),
         incorporationCountry: incorporationCountry.trim(),
         website:
-          typeof website === 'string' && website.trim()
-            ? website.trim()
-            : null
-      }
+          typeof website === "string" && website.trim() ? website.trim() : null,
+      },
     });
 
     return res.status(201).json(company);
   } catch (err) {
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
 const getCompanies = async (req, res) => {
   try {
     const companies = await prisma.company.findMany({
-      include: { products: true }
+      include: { products: true },
     });
 
     return res.json(companies);
   } catch (err) {
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 const updateCompany = async (req, res) => {
   try {
     const { id } = req.params;
     const { name, incorporationCountry, website } = req.body;
 
     if (!id || typeof id !== "string") {
-      return res.status(400).json({ message: "invalid company id" });
+      return res.status(400).json({
+        message: "invalid company id",
+      });
     }
 
     const existingCompany = await prisma.company.findUnique({
@@ -77,15 +88,29 @@ const updateCompany = async (req, res) => {
 
     const data = {};
 
-    if (!isInvalidString(name)) data.name = name.trim();
+    // NAME
+    if (name !== undefined) {
+      if (isInvalidString(name)) {
+        return res.status(400).json({
+          message: "invalid name",
+        });
+      }
+      data.name = name.trim();
+    }
 
-    if (!isInvalidString(incorporationCountry)) {
+    // INCORPORATION COUNTRY
+    if (incorporationCountry !== undefined) {
+      if (isInvalidString(incorporationCountry)) {
+        return res.status(400).json({
+          message: "invalid incorporation country",
+        });
+      }
       data.incorporationCountry = incorporationCountry.trim();
     }
 
-    if (website !== undefined) {
-      data.website = website?.trim() || null;
-    }
+    // WEBSITE
+    data.website =
+      typeof website === "string" && website.trim() ? website.trim() : null;
 
     if (Object.keys(data).length === 0) {
       return res.status(400).json({
@@ -100,34 +125,36 @@ const updateCompany = async (req, res) => {
 
     return res.json(company);
   } catch (err) {
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({
+      message: "Internal server error",
+    });
   }
 };
 const deleteCompany = async (req, res) => {
   try {
     const { id } = req.params;
 
-    if (!id || typeof id !== 'string') {
-      return res.status(400).json({ message: 'invalid company id' });
+    if (!id || typeof id !== "string") {
+      return res.status(400).json({ message: "invalid company id" });
     }
 
     const exists = await prisma.company.findUnique({
-      where: { id }
+      where: { id },
     });
 
     if (!exists) {
       return res.status(404).json({
-        message: 'Company not found'
+        message: "Company not found",
       });
     }
 
     await prisma.company.delete({
-      where: { id }
+      where: { id },
     });
 
-    return res.json({ message: 'Company deleted' });
+    return res.json({ message: "Company deleted" });
   } catch (err) {
-    return res.status(500).json({ message: 'Internal server error' });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -135,6 +162,5 @@ module.exports = {
   createCompany,
   getCompanies,
   updateCompany,
-  deleteCompany
-}; 
-
+  deleteCompany,
+};

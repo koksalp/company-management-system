@@ -12,7 +12,6 @@ export default function CompanyEditor({ open, company, onClose }) {
       ? {
           id: company.id,
           name: company.name || "",
-          legalNumber: company.legalNumber || "",
           incorporationCountry: company.incorporationCountry || "",
           website: company.website || "" 
         }
