@@ -1,16 +1,71 @@
-# React + Vite
+# 📦 Frontend - Company & Product Management App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the frontend of a full-stack application built with **React (Vite)**.  
+It connects to a Node.js + Express backend and provides UI for authentication, companies, and products management.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+# ⚙️ Tech Stack
 
-## React Compiler
+- React (Vite)
+- React Router
+- Context API
+- Axios API
+- CSS Modules
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+# 📥 Installation
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Install dependencies
+
+npm install
+
+---
+
+## Environment Setup
+
+Create a `.env` file in the frontend root:
+
+VITE_BASE_URL=http://localhost:3000 (backend api url)
+
+---
+
+# 🚀 Running the App
+
+Start development server:
+
+npm run dev
+
+Frontend runs at:
+
+http://localhost:5173 (now you should be seeing something like that)
+
+---
+
+# 🔐 Features 
+
+- User Login / Register
+- JWT authentication (httpOnly cookie based)
+- Protected routes
+- Company CRUD (create, update, delete, list)
+- Product CRUD (create, update, delete, list)
+- Dashboard with dynamic stats
+
+---
+
+# 🧱 Architecture Overview
+
+- Pages: UI screens (Login, Register, Dashboard, Company, Product)
+- Components: Reusable UI elements
+- Context: Global state management (Auth, Toast, Data)
+- Routes: Protected routing logic
+- Services: API calls to backend
+
+---
+
+# ⚠️ Notes
+
+- Backend must be running before starting frontend
+- Ensure backend URL is correctly set in `.env`
+- Cookies must be enabled for authentication to work 
