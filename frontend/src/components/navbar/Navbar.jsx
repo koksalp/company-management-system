@@ -16,6 +16,7 @@ export default function Navbar() {
         <div className={styles.right}>
           {user && (
             <>
+              <span className={styles.username}>Logged in as {user.username}</span>
               <button className={styles.link} onClick={() => navigate("/")}>
                 Dashboard
               </button>
@@ -32,8 +33,6 @@ export default function Navbar() {
               >
                 Products
               </button>
-
-              <span className={styles.username}>{user.username}</span>
 
               <button className={styles.logout} onClick={logout}>
                 Logout
