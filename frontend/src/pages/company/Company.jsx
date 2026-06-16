@@ -70,7 +70,7 @@ export default function Company() {
       flex: 1,
       renderCell: (params) => (
         <a href={params.value} target="_blank" rel="noreferrer">
-          Visit
+          {params.value}
         </a>
       ),
     },
