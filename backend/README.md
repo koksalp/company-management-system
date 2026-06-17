@@ -20,82 +20,85 @@ It handles authentication, company management, and product management with full 
 
 # 📁 Project Structure
 
+```bash
 backend/
-  prisma/
-    schema.prisma
-    seed.js
-
-  src/
-    controllers/
-    routes/
-    middlewares/
-    utils/
-    app.js
-    server.js
-
-  tests/
-
-  package.json
-  .env
+├── prisma/
+│   ├── schema.prisma
+│   └── seed.js
+│
+├── src/
+│   ├── controllers/
+│   ├── routes/
+│   ├── middlewares/
+│   ├── utils/
+│   ├── app.js
+│   └── server.js
+│
+├── tests/
+│
+├── package.json
+├── .env (this needs to be created manually)
+```
 
 ---
 
 # 📥 Installation
 
-## Install dependencies
+Install dependencies:
 
+```bash id="install-deps"
 npm install
+```
 
 ---
 
-## Create environment variables
+Create environment variables (values below are just arbitrary):
 
-Create a .env file in backend root (values below are arbitrary):
-
-PORT=3000  
-DATABASE_URL="your_postgres_connection_string"  
-JWT_SECRET="your_secret_key"  
+```env id="env-file"
+PORT=3000
+DATABASE_URL="your_postgres_connection_string"
+JWT_SECRET="your_secret_key"
 CLIENT_URL="http://localhost:5173"
+```
 
 ---
 
 # 🧱 Database Setup (Prisma)
 
-## Generate Prisma Client
+Generate Prisma Client:
 
-This creates the Prisma Client based on your schema.prisma
-
+```bash id="prisma-generate"
 npx prisma generate
+```
 
----
+Push database schema:
 
-## Push database schema
-
-This creates tables in PostgreSQL.
-
+```bash id="prisma-push"
 npx prisma db push
+```
 
----
+(Optional) Seed database:
 
-## (Optional) Seed database
-
-Generates fake data for testing.
-
+```bash id="prisma-seed"
 node prisma/seed.js 100 20
+```
 
-- 100 → number of companies
-- 20 → number of products per company
+100 → number of companies  
+20 → number of products per company
 
 ---
 
 # 🚀 Running the Server
 
-Start development server:
-
+```bash id="run-server"
 npm run dev
+```
 
 Server runs at:
-http://localhost:3000 (now you should be seeing something like that)
+
+```
+http://localhost:3000
+```
 
 ---
 
@@ -111,33 +114,42 @@ http://localhost:3000 (now you should be seeing something like that)
 
 # 📡 API Endpoints
 
-## Auth:
-- POST /auth/register
-- POST /auth/login
-- POST /auth/logout
-- GET /auth/me
+Auth:
 
-## Company:
-- GET /company
-- POST /company
-- PUT /company/:id
-- DELETE /company/:id
+```bash id="auth-routes"
+POST /auth/register
+POST /auth/login
+POST /auth/logout
+GET /auth/me
+```
 
-## Product:
-- GET /product
-- POST /product
-- PUT /product/:id
-- DELETE /product/:id
+Company:
+
+```bash id="company-routes"
+GET /company
+POST /company
+PUT /company/:id
+DELETE /company/:id
+```
+
+Product:
+
+```bash id="product-routes"
+GET /product
+POST /product
+PUT /product/:id
+DELETE /product/:id
+```
 
 ---
 
 # 🧠 Architecture
 
-- Controllers → business logic
-- Routes → API endpoints
-- Middleware → authentication checks
-- Prisma → database ORM
-- PostgreSQL → database
+Controllers → Business logic  
+Routes → API endpoints  
+Middleware → Authentication  
+Prisma → ORM  
+PostgreSQL → Database  
 
 (Simple layered architecture for clarity and scalability)
 
@@ -148,34 +160,37 @@ http://localhost:3000 (now you should be seeing something like that)
 This project includes basic integration tests using Jest / Supertest.
 
 Tests cover:
+
 - Authentication flow (register, login, logout)
 - Company CRUD operations
 - Product CRUD operations
-- JWT cookie-based authentication flow
+- JWT cookie authentication flow
 
 ---
 
-## ▶️ Run tests
+Run tests:
 
+```bash id="test-run"
 npm test
+```
 
 ---
 
-## ⚠️ Test Notes
+# ⚠️ Test Notes
 
-- Tests use dynamically generated usernames to avoid conflicts (Date.now() based usernames)
+- Uses dynamic usernames (Date.now()) to avoid conflicts
 - Authentication is handled via HTTP-only cookies
-- Company/Product routes require valid authentication
-- Each test runs independently and avoids shared state issues
+- Company/Product routes require authentication
+- Each test runs independently
 
 ---
 
 # 🧠 Notes
 
-- Ensure PostgreSQL or Neon DB is running
-- Run prisma generate after schema changes
-- Use db push for quick sync
-- JWT_SECRET must be set in env
+- Ensure PostgreSQL is running
+- Run `npx prisma generate` after schema changes
+- Use `npx prisma db push` for quick sync
+- JWT_SECRET must be set in .env
 
 ---
 
@@ -187,4 +202,4 @@ npm test
 ✔ Prisma integration  
 ✔ Database seeding  
 ✔ Protected routes  
-✔ Test coverage (basic integration tests)
+✔ Basic integration tests 
