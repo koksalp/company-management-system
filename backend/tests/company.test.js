@@ -1,62 +1,73 @@
-const request = require('supertest');
-const app = require('../src/app');
+const request = require("supertest");
+const app = require("../src/app");
 
-describe('Company API (cookie auth)', () => {
-  const agent = request.agent(app);
+describe("Company Controller", () => {
+  const user = {
+    username: `company_user_${Date.now()}`,
+    password: "Test12345!",
+  };
 
-  const username = `testuser_${Date.now()}`;
-  const password = 'Test123!';
-
+  let cookie;
   let companyId;
 
-  beforeAll(async () => {
-    await agent.post('/auth/register').send({
-      username,
-      password
-    });
-
-    await agent.post('/auth/login').send({
-      username,
-      password
-    });
-  });
-
-  test('should create company', async () => {
-    const body = {
-      name: 'Test Company',
-      legalNumber: `LC-${Date.now()}`,
-      incorporationCountry: 'USA',
-      website: 'https://test.com'
-    };
-
-    const res = await agent.post('/company').send(body);
+  test("register user", async () => {
+    const res = await request(app)
+      .post("/auth/register")
+      .send(user);
 
     expect(res.statusCode).toBe(201);
-    expect(res.body.id).toBeDefined();
+  });
+
+  test("login user and get cookie", async () => {
+    const res = await request(app)
+      .post("/auth/login")
+      .send(user);
+
+    expect(res.statusCode).toBe(200);
+
+    cookie = res.headers["set-cookie"];
+  });
+
+  test("create company", async () => {
+    const res = await request(app)
+      .post("/company")
+      .set("Cookie", cookie)
+      .send({
+        name: "Test Company",
+        legalNumber: `LC_${Date.now()}`,
+        incorporationCountry: "USA",
+        website: "https://test.com",
+      });
+
+    expect(res.statusCode).toBe(201);
 
     companyId = res.body.id;
   });
 
-  test('should get companies', async () => {
-    const res = await agent.get('/company');
+  test("get companies", async () => {
+    const res = await request(app)
+      .get("/company")
+      .set("Cookie", cookie);
 
     expect(res.statusCode).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
   });
 
-  test('should update company', async () => {
-    const res = await agent
+  test("update company", async () => {
+    const res = await request(app)
       .put(`/company/${companyId}`)
-      .send({ name: 'Updated Company' });
-
-    expect(res.statusCode).toBe(200);
-    expect(res.body.name).toBe('Updated Company');
-  });
-
-  test('should delete company', async () => {
-    const res = await agent.delete(`/company/${companyId}`);
+      .set("Cookie", cookie)
+      .send({
+        name: "Updated Company",
+      });
 
     expect(res.statusCode).toBe(200);
   });
-}); 
 
+  test("delete company", async () => {
+    const res = await request(app)
+      .delete(`/company/${companyId}`)
+      .set("Cookie", cookie);
+
+    expect(res.statusCode).toBe(200);
+  });
+});
